@@ -105,9 +105,7 @@ public class NSOEClient extends TablutClient{
                 if (this.getPlayer().equals(State.Turn.WHITE)) {
                     // if is my turn (WHITE)
                     // search the best move in search tree
-                    System.out.println("ciao");
                     Action a = giocatore.makeDecision(state);
-                    System.out.println("ciao");
                     System.out.println(a);
                     try {
                         this.write(a);

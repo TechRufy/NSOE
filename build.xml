@@ -71,7 +71,7 @@
         </java>
     </target>
 
-    <target name="NSOEPlayer">
+    <target name="NSOEPlayerW">
         <java classname="it.unibo.ai.didattica.competition.tablut.NordSudOvestEst.Client.NSOEClient" fork="true">
             <classpath>
                 <pathelement location="lib/gson-2.2.2.jar"/>
@@ -79,6 +79,19 @@
                 <pathelement location="build"/>
             </classpath>
             <arg value="WHITE"/>
+            <arg value="60"/>
+            <arg value="localhost"/>
+        </java>
+    </target>
+	
+    <target name="NSOEPlayerB">
+        <java classname="it.unibo.ai.didattica.competition.tablut.NordSudOvestEst.Client.NSOEClient" fork="true">
+            <classpath>
+                <pathelement location="lib/gson-2.2.2.jar"/>
+                <pathelement location="lib/aima-core.jar"/>
+                <pathelement location="build"/>
+            </classpath>
+            <arg value="BLACK"/>
             <arg value="60"/>
             <arg value="localhost"/>
         </java>
