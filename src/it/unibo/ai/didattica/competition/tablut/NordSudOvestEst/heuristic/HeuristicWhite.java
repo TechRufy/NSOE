@@ -8,6 +8,18 @@ public class HeuristicWhite extends Heuristic{
     }
 
 
+    @Override
+    public double evaluate() {
 
+        //distanza re uscita
+        //densità neri + posizione re
+        //controllo minacciato
+        //controllo minaccia
+
+
+
+
+        return 0;
+    }
 
 }

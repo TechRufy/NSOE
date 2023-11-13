@@ -9,11 +9,7 @@ public class Heuristic {
     private int NWhite;
 
     public Heuristic(State state) {
-        this.state = state;
-
-        State.Pawn[][] board = state.getBoard();
-        int nblack = 0;
-
+        State.Pawn[][] board = this.state.getBoard();
         for (State.Pawn[] rows: board) {
             for (State.Pawn p: rows) {
 
@@ -24,18 +20,32 @@ public class Heuristic {
                 if (p.equalsPawn(String.valueOf(State.Pawn.WHITE))){
                     this.NWhite = this.NWhite + 1;
                 }
-
-
             }
-
         }
     }
-    public double evaluateState(){
+
+
+    public int ManhatthanDistance(Integer[] p1, Integer[] p2){
+
+        return Math.abs(p1[0] - p2[0]) + Math.abs(p1[1] - p2[1]);
+
+    }
+
+
+    public double evaluate(){
 
         return 0;
     }
 
+    public State getState() {
+        return state;
+    }
 
+    public int getNblack() {
+        return Nblack;
+    }
 
-
+    public int getNWhite() {
+        return NWhite;
+    }
 }

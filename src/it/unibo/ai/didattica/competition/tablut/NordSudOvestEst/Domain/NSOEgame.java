@@ -1,5 +1,8 @@
 package it.unibo.ai.didattica.competition.tablut.NordSudOvestEst.Domain;
 
+import it.unibo.ai.didattica.competition.tablut.NordSudOvestEst.heuristic.Heuristic;
+import it.unibo.ai.didattica.competition.tablut.NordSudOvestEst.heuristic.HeuristicBlack;
+import it.unibo.ai.didattica.competition.tablut.NordSudOvestEst.heuristic.HeuristicWhite;
 import it.unibo.ai.didattica.competition.tablut.domain.Action;
 import it.unibo.ai.didattica.competition.tablut.domain.GameAshtonTablut;
 import it.unibo.ai.didattica.competition.tablut.domain.State;
@@ -114,33 +117,33 @@ public class NSOEgame extends GameAshtonTablut implements aima.core.search.adver
 
     @Override
     public boolean isTerminal(State state) {
-        State.Turn turn=state.getTurn();
+        State.Turn turn = state.getTurn();
         return turn.equals(State.Turn.BLACKWIN)||turn.equals(State.Turn.WHITEWIN)||turn.equals(State.Turn.DRAW);
     }
 
     @Override
     public double getUtility(State state, State.Turn turn) {
 
-        return new Random().nextInt();
+        Heuristic h = null;
+
+        if (turn.equalsTurn(String.valueOf(State.Turn.WHITE))){
+            h = new HeuristicWhite(state);
+        }else {
+            h = new HeuristicBlack(state);
+        }
+
+        return h.evaluate();
     }
 
-    public List<Integer[]> getPositionsOf(State state, State.Pawn pawn){
-        String strState=state.toLinearString().substring(0, 81);
-        int pos=0;
-        int boardsize=state.getBoard().length;
-        List<Integer[]> result=new ArrayList<>();
-        while((pos=strState.indexOf(pawn.toString(),pos))>0){
-            result.add(new Integer[]{pos/boardsize,pos%boardsize});
-            pos+=1;
+    static public List<Integer[]> getPositionsOf(State state, State.Pawn pawn){
+        String linearState = state.toLinearString().substring(0, 81);
+        int pos = 0;
+        int boardlength = state.getBoard().length;
+        List<Integer[]> result = new ArrayList<>();
+        while((pos = linearState.indexOf(pawn.toString(),pos)) > 0){
+            result.add(new Integer[]{pos / boardlength,pos % boardlength});
+            pos += 1;
         }
-        Integer king[]= {strState.indexOf("K")/boardsize,strState.indexOf("K")%boardsize};
-        if (pawn.equals(State.Pawn.WHITE)) result.add(king);
-        Collections.sort(result,(p1, p2)->{
-            int dist1=Math.max(Math.abs(p1[0]-king[0]),Math.abs(p1[1]-king[1]));
-            int dist2=Math.max(Math.abs(p2[0]-king[0]),Math.abs(p2[1]-king[1]));
-            return dist1-dist2;
-        });
-
         return result;
     }
 
