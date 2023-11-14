@@ -1,6 +1,7 @@
 package it.unibo.ai.didattica.competition.tablut.NordSudOvestEst.heuristic;
 
 import it.unibo.ai.didattica.competition.tablut.NordSudOvestEst.Domain.NSOEgame;
+import it.unibo.ai.didattica.competition.tablut.NordSudOvestEst.NSOEPlayer;
 import it.unibo.ai.didattica.competition.tablut.domain.State;
 
 import java.util.ArrayList;
@@ -72,7 +73,38 @@ public class HeuristicWhite extends Heuristic{
                 blackNumber++;
             }
         }
-        return 1-((double)blackNumber / blackPos.size());
+        return 1-((double)blackNumber / getNblack());
+    }
+
+
+    private double blackEaten(){
+        List<Integer[]> blackPos = NSOEgame.getPositionsOf(super.getState(), State.Pawn.BLACK);
+        return 1-(getNblack() / 16);
+    }
+
+    protected double checkHazard(){
+        List<Integer[]> whitePos = NSOEgame.getPositionsOf(super.getState(), State.Pawn.WHITE);
+        int numberHazard = 0;
+
+        for(Integer[] whiteP: whitePos){
+            if(super.getState().getPawn(whiteP[0]-1, whiteP[1]) == State.Pawn.BLACK){
+
+            }
+            if(super.getState().getPawn(whiteP[0]+1, whiteP[1]) == State.Pawn.BLACK){
+
+            }
+            if(super.getState().getPawn(whiteP[0], whiteP[1]-1) == State.Pawn.BLACK){
+
+            }
+            if(super.getState().getPawn(whiteP[0], whiteP[1]+1) == State.Pawn.BLACK){
+
+            }
+        }
+        return 0;
+    }
+
+    private double checkThreat(){
+        return 0;
     }
 
 
