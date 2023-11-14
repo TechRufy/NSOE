@@ -141,13 +141,17 @@ public class HeuristicBlack extends Heuristic {
         double K = HKingDistance();
         double DP = DstrategicPosition();
         double KC = KingCross();
-        double KP = 1;
-        double DPP = 1;
-        double KCP = 1;
+        double NB = super.getNblack()/16.0;
+        double NW = 1 - super.getNWhite()/9.0;
+        double KP = 10;
+        double DPP = 10;
+        double NBP = 1;
+        double KCP = 10;
+        double NWP = 1;
 
 
 
-        return (K*KP + DP*DPP + KC*KCP)/(KP + DPP + KCP);
+        return (K*KP + DP*DPP + KC*KCP + NW*NWP + NB*NBP)/(KP + DPP + KCP + NWP + NBP);
     }
 
 }

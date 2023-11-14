@@ -19,7 +19,7 @@ public class Heuristic {
                     this.Nblack = this.Nblack + 1;
                 }
 
-                if (p.equalsPawn(String.valueOf(State.Pawn.WHITE))){
+                if (p.equalsPawn(String.valueOf(State.Pawn.WHITE)) || p.equalsPawn(String.valueOf(State.Pawn.KING))){
                     this.NWhite = this.NWhite + 1;
                 }
             }
