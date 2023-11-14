@@ -9,6 +9,8 @@ public class Heuristic {
     private int NWhite;
 
     public Heuristic(State state) {
+
+        this.state = state;
         State.Pawn[][] board = this.state.getBoard();
         for (State.Pawn[] rows: board) {
             for (State.Pawn p: rows) {

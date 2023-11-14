@@ -124,7 +124,7 @@ public class NSOEgame extends GameAshtonTablut implements aima.core.search.adver
     @Override
     public double getUtility(State state, State.Turn turn) {
 
-        Heuristic h = null;
+        Heuristic h;
 
         if (turn.equalsTurn(String.valueOf(State.Turn.WHITE))){
             h = new HeuristicWhite(state);
