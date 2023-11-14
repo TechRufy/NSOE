@@ -95,7 +95,7 @@ public class HeuristicBlack extends Heuristic {
 
         double d = average.isPresent() ? average.getAsDouble() : 0;
 
-        return d/12;
+        return d/5;
 
 
     }
