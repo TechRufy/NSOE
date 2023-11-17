@@ -66,7 +66,7 @@ public class HeuristicBlack extends Heuristic {
 
             double d = average.isPresent() ? average.getAsDouble() : 0;
 
-            return d/5;
+            return d/12;
     }
 
 
@@ -135,6 +135,70 @@ public class HeuristicBlack extends Heuristic {
         return value;
     }
 
+    public double freeKing(){
+        Boolean[] block = {Boolean.FALSE,Boolean.FALSE,Boolean.FALSE,Boolean.FALSE};
+        if(this.king[0] > 5 ||  this.king[0] < 3 || this.king[1] > 5 ||  this.king[1] < 3){
+            for(int i = 0 ; i < this.king[1]; i++){
+                Integer[] coord = {this.king[0], i};
+                State.Pawn tile = super.getState().getPawn(this.king[0], i);
+                if(tile.equalsPawn(String.valueOf(State.Pawn.BLACK)) ||
+                        tile.equalsPawn(String.valueOf(State.Pawn.WHITE)) ||
+                                this.citadels.contains(coord)){
+
+                        block[0] = Boolean.TRUE;
+                        break;
+                }
+            }
+
+            for(int i = this.king[1] + 1 ; i < 9; i++){
+                Integer[] coord = {this.king[0], i};
+                State.Pawn tile = super.getState().getPawn(this.king[0], i);
+                if(tile.equalsPawn(String.valueOf(State.Pawn.BLACK)) ||
+                        tile.equalsPawn(String.valueOf(State.Pawn.WHITE)) ||
+                        this.citadels.contains(coord)){
+
+                    block[1] = Boolean.TRUE;
+                    break;
+                }
+            }
+
+            for(int i = 0 ; i < this.king[0]; i++){
+                Integer[] coord = {i, this.king[1]};
+                State.Pawn tile = super.getState().getPawn(this.king[0], i);
+                if(tile.equalsPawn(String.valueOf(State.Pawn.BLACK)) ||
+                        tile.equalsPawn(String.valueOf(State.Pawn.WHITE)) ||
+                        this.citadels.contains(coord)){
+
+                    block[2] = Boolean.TRUE;
+                    break;
+                }
+            }
+
+            for(int i = this.king[1] + 1 ; i < 9; i++){
+                Integer[] coord = {i, this.king[1]};
+                State.Pawn tile = super.getState().getPawn(this.king[0], i);
+                if(tile.equalsPawn(String.valueOf(State.Pawn.BLACK)) ||
+                        tile.equalsPawn(String.valueOf(State.Pawn.WHITE)) ||
+                        this.citadels.contains(coord)){
+
+                    block[3] = Boolean.TRUE;
+                    break;
+                }
+            }
+
+
+
+
+        }
+
+        if(Arrays.asList(block).contains(Boolean.FALSE)){
+            return -1;
+        }else{
+            return 1;
+        }
+
+    }
+
     @Override
     public double evaluate() {
 
@@ -143,15 +207,17 @@ public class HeuristicBlack extends Heuristic {
         double KC = KingCross();
         double NB = super.getNblack()/16.0;
         double NW = 1 - super.getNWhite()/9.0;
+        double FK = freeKing();
         double KP = 10;
         double DPP = 10;
         double NBP = 1;
         double KCP = 10;
         double NWP = 1;
+        double FKP = 10;
 
 
 
-        return (K*KP + DP*DPP + KC*KCP + NW*NWP + NB*NBP)/(KP + DPP + KCP + NWP + NBP);
+        return (K*KP + DP*DPP + KC*KCP + NW*NWP + NB*NBP + FK*FKP)/(KP + DPP + KCP + NWP + NBP + FKP);
     }
 
 }

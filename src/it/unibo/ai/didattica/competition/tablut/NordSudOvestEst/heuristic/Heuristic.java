@@ -1,6 +1,9 @@
 package it.unibo.ai.didattica.competition.tablut.NordSudOvestEst.heuristic;
 
+import aima.gui.fx.framework.IntegrableApplication;
 import it.unibo.ai.didattica.competition.tablut.domain.State;
+
+import java.util.ArrayList;
 
 public class Heuristic {
 
@@ -32,6 +35,7 @@ public class Heuristic {
         return Math.abs(p1[0] - p2[0]) + Math.abs(p1[1] - p2[1]);
 
     }
+
 
 
     public double evaluate(){
