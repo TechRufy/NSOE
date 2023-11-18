@@ -7,37 +7,10 @@ import java.util.*;
 
 public class HeuristicBlack extends Heuristic {
 
-    private Integer[] king;
-    private List<Integer[]> blackP;
-
-    private ArrayList<Integer[]> citadels;
-
-
-
-
 
     public HeuristicBlack(State state) {
 
         super(state);
-        this.king = NSOEgame.getPositionsOf(super.getState(),State.Pawn.KING).get(0);
-        this.blackP = NSOEgame.getPositionsOf(super.getState(),State.Pawn.BLACK);
-        this.citadels = new ArrayList<>();
-        this.citadels.add(new Integer[]{0,3});
-        this.citadels.add(new Integer[]{0,4});
-        this.citadels.add(new Integer[]{0,5});
-        this.citadels.add(new Integer[]{1,4});
-        this.citadels.add(new Integer[]{3,0});
-        this.citadels.add(new Integer[]{4,0});
-        this.citadels.add(new Integer[]{5,0});
-        this.citadels.add(new Integer[]{4,1});
-        this.citadels.add(new Integer[]{8,3});
-        this.citadels.add(new Integer[]{8,4});
-        this.citadels.add(new Integer[]{8,5});
-        this.citadels.add(new Integer[]{7,4});
-        this.citadels.add(new Integer[]{3,8});
-        this.citadels.add(new Integer[]{4,8});
-        this.citadels.add(new Integer[]{5,8});
-        this.citadels.add(new Integer[]{4,7});
 
     }
 
@@ -46,12 +19,12 @@ public class HeuristicBlack extends Heuristic {
 
         ArrayList<Integer> distance = new ArrayList<>();
 
-        for (Integer[] p: this.blackP) {
+        for (Integer[] p: this.getBlackP()) {
 
-            Integer[] sopra = {this.king[0] + 1, this.king[1]};
-            Integer[] sotto = {this.king[0] - 1, this.king[1]};
-            Integer[] destra = {this.king[0] , this.king[1] + 1};
-            Integer[] sinistra = {this.king[0] + 1, this.king[1] - 1};
+            Integer[] sopra = {this.getKing()[0] + 1, this.getKing()[1]};
+            Integer[] sotto = {this.getKing()[0] - 1, this.getKing()[1]};
+            Integer[] destra = {this.getKing()[0] , this.getKing()[1] + 1};
+            Integer[] sinistra = {this.getKing()[0] + 1, this.getKing()[1] - 1};
 
             ArrayList<Integer> Dcroce = new ArrayList<>();
             Dcroce.add(ManhatthanDistance(p,sopra));
@@ -66,11 +39,11 @@ public class HeuristicBlack extends Heuristic {
 
             double d = average.isPresent() ? average.getAsDouble() : 0;
 
-            return d/12;
+            return d/13;
     }
 
 
-    public double DstrategicPosition(){
+    public double smallDiagonal(){
         ArrayList<Integer[]> StrategicPosition = new ArrayList<>(Arrays.asList(
                 new Integer[]{1, 2},
                 new Integer[]{2, 1},
@@ -81,21 +54,35 @@ public class HeuristicBlack extends Heuristic {
                 new Integer[]{2, 7},
                 new Integer[]{1, 6}));
 
-        ArrayList<Integer> distance = new ArrayList<>();
 
-        for (Integer[] p: this.blackP) {
-            ArrayList<Integer> Distancepos = new ArrayList<>();
-            for (Integer[] Pos: StrategicPosition){
-                Distancepos.add(ManhatthanDistance(p,Pos));
-            }
-            distance.add(Collections.min(Distancepos));
-        }
 
-        OptionalDouble average = distance.stream().mapToDouble(a -> a).average();
+        double c = (double) StrategicPosition.stream().filter(tile -> this.getState().getPawn(tile[0],tile[1]).equals(State.Pawn.WHITE)).count();
 
-        double d = average.isPresent() ? average.getAsDouble() : 0;
+        return c/8;
 
-        return d/5;
+
+    }
+
+    public double bigDiagonal(){
+        ArrayList<Integer[]> StrategicPosition = new ArrayList<>(Arrays.asList(
+                new Integer[]{3, 1},
+                new Integer[]{2, 2},
+                new Integer[]{1, 3},
+                new Integer[]{5, 1},
+                new Integer[]{6, 2},
+                new Integer[]{7, 3},
+                new Integer[]{7, 5},
+                new Integer[]{6, 6},
+                new Integer[]{5, 7},
+                new Integer[]{3, 7},
+                new Integer[]{2, 6},
+                new Integer[]{1, 5}));
+
+
+
+        double c = (double) StrategicPosition.stream().filter(tile -> this.getState().getPawn(tile[0],tile[1]).equals(State.Pawn.WHITE)).count();
+
+        return c/12;
 
 
     }
@@ -103,10 +90,10 @@ public class HeuristicBlack extends Heuristic {
     public double KingCross(){
 
         ArrayList<Integer[]> Cross = new ArrayList<>(Arrays.asList(
-                new Integer[]{this.king[0] + 1,this.king[1]},
-                new Integer[]{this.king[0] - 1,this.king[1]},
-                new Integer[]{this.king[0],this.king[1] + 1},
-                new Integer[]{this.king[0],this.king[1] - 1}));
+                new Integer[]{this.getKing()[0] + 1,this.getKing()[1]},
+                new Integer[]{this.getKing()[0] - 1,this.getKing()[1]},
+                new Integer[]{this.getKing()[0],this.getKing()[1] + 1},
+                new Integer[]{this.getKing()[0],this.getKing()[1] - 1}));
 
         double value = 0;
         Boolean flag = Boolean.FALSE;
@@ -115,7 +102,7 @@ public class HeuristicBlack extends Heuristic {
                 value += 0.2;
             } else if (super.getState().getPawn(p[0],p[1]) == State.Pawn.EMPTY) {
                 value += 0.1;
-            } else if (citadels.contains(p)) {
+            } else if (this.getCitadels().contains(p)) {
                 flag = Boolean.TRUE;
                 value += 0.3;
             }
@@ -135,89 +122,29 @@ public class HeuristicBlack extends Heuristic {
         return value;
     }
 
-    public double freeKing(){
-        Boolean[] block = {Boolean.FALSE,Boolean.FALSE,Boolean.FALSE,Boolean.FALSE};
-        if(this.king[0] > 5 ||  this.king[0] < 3 || this.king[1] > 5 ||  this.king[1] < 3){
-            for(int i = 0 ; i < this.king[1]; i++){
-                Integer[] coord = {this.king[0], i};
-                State.Pawn tile = super.getState().getPawn(this.king[0], i);
-                if(tile.equalsPawn(String.valueOf(State.Pawn.BLACK)) ||
-                        tile.equalsPawn(String.valueOf(State.Pawn.WHITE)) ||
-                                this.citadels.contains(coord)){
 
-                        block[0] = Boolean.TRUE;
-                        break;
-                }
-            }
-
-            for(int i = this.king[1] + 1 ; i < 9; i++){
-                Integer[] coord = {this.king[0], i};
-                State.Pawn tile = super.getState().getPawn(this.king[0], i);
-                if(tile.equalsPawn(String.valueOf(State.Pawn.BLACK)) ||
-                        tile.equalsPawn(String.valueOf(State.Pawn.WHITE)) ||
-                        this.citadels.contains(coord)){
-
-                    block[1] = Boolean.TRUE;
-                    break;
-                }
-            }
-
-            for(int i = 0 ; i < this.king[0]; i++){
-                Integer[] coord = {i, this.king[1]};
-                State.Pawn tile = super.getState().getPawn(this.king[0], i);
-                if(tile.equalsPawn(String.valueOf(State.Pawn.BLACK)) ||
-                        tile.equalsPawn(String.valueOf(State.Pawn.WHITE)) ||
-                        this.citadels.contains(coord)){
-
-                    block[2] = Boolean.TRUE;
-                    break;
-                }
-            }
-
-            for(int i = this.king[1] + 1 ; i < 9; i++){
-                Integer[] coord = {i, this.king[1]};
-                State.Pawn tile = super.getState().getPawn(this.king[0], i);
-                if(tile.equalsPawn(String.valueOf(State.Pawn.BLACK)) ||
-                        tile.equalsPawn(String.valueOf(State.Pawn.WHITE)) ||
-                        this.citadels.contains(coord)){
-
-                    block[3] = Boolean.TRUE;
-                    break;
-                }
-            }
-
-
-
-
-        }
-
-        if(Arrays.asList(block).contains(Boolean.FALSE)){
-            return -1;
-        }else{
-            return 1;
-        }
-
-    }
 
     @Override
     public double evaluate() {
 
         double K = HKingDistance();
-        double DP = DstrategicPosition();
+        double SD = smallDiagonal();
         double KC = KingCross();
         double NB = super.getNblack()/16.0;
         double NW = 1 - super.getNWhite()/9.0;
-        double FK = freeKing();
-        double KP = 10;
-        double DPP = 10;
-        double NBP = 1;
-        double KCP = 10;
-        double NWP = 1;
-        double FKP = 10;
+        double FK = 1 - freeKing();
+        double BD = bigDiagonal();
+        double KP =  3;
+        double SDP = 14;
+        double KCP = 4;
+        double NBP = 4;
+        double NWP = 5;
+        double FKP = 20;
+        double BDP = 20;
 
 
 
-        return (K*KP + DP*DPP + KC*KCP + NW*NWP + NB*NBP + FK*FKP)/(KP + DPP + KCP + NWP + NBP + FKP);
+        return (K*KP  + KC*KCP + SD*SDP + NW*NWP + NB*NBP + FK*FKP + BD*BDP)/(KP +  KCP + NWP + NBP + FKP+ SDP + BDP);
     }
 
 }

@@ -4,19 +4,65 @@ import it.unibo.ai.didattica.competition.tablut.NordSudOvestEst.Domain.NSOEgame;
 import it.unibo.ai.didattica.competition.tablut.NordSudOvestEst.NSOEPlayer;
 import it.unibo.ai.didattica.competition.tablut.domain.State;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class HeuristicWhite extends Heuristic{
     public HeuristicWhite(State state) {
         super(state);
     }
 
+    public double XPosition(){
+        ArrayList<Integer[]> StrategicPosition = new ArrayList<>(Arrays.asList(
+                new Integer[]{2, 2},
+                new Integer[]{3, 3},
+                new Integer[]{5, 3},
+                new Integer[]{6, 2},
+                new Integer[]{5, 5},
+                new Integer[]{6, 6},
+                new Integer[]{3, 5},
+                new Integer[]{2, 6}));
+
+
+
+        double c = (double) StrategicPosition.stream().filter(tile -> this.getState().getPawn(tile[0],tile[1]).equals(State.Pawn.WHITE)).count();
+
+        return c/8;
+
+
+    }
+
+    public double Inthrone(){
+        if(Arrays.equals(this.getKing(), new Integer[]{4, 4})){
+            return 0;
+        }else{
+            return 0.75;
+        }
+    }
+
 
     @Override
     public double evaluate() {
-        return (kingExit()*5+checkDensity())/6;
+
+        double K = kingExit();
+        //double CD = checkDensity();
+        double NB = 1 - super.getNblack()/16.0;
+        double NW = super.getNWhite()/9.0;
+        double FK = freeKing();
+        double T = Inthrone();
+        double X = XPosition();
+        double KP = 20;
+        //double CDP = 4;
+        double NBP = 2;
+        double NWP = 4;
+        double FKP = 15;
+        double TP = 15;
+        double XP = 4;
+
+
+
+
+        return (K*KP + NW*NWP + NB*NBP + FK*FKP + T*TP + X)/(KP + NWP + NBP + FKP + TP + XP);
+
     }
     private double kingExit(){
         List<Integer[]> winTiles = (List<Integer[]>) new ArrayList<>(Arrays.asList(
@@ -49,26 +95,25 @@ public class HeuristicWhite extends Heuristic{
     }
 
     private double checkDensity(){
-        List<Integer[]> blackPos = NSOEgame.getPositionsOf(super.getState(), State.Pawn.BLACK);
-        List<Integer[]> kingPos = NSOEgame.getPositionsOf(super.getState(), State.Pawn.KING);
+
         int blackNumber = 0;
-        if(kingPos.get(0)[0] == 4 || kingPos.get(0)[1] == 4){
+        /*if(this.getKing()[0] == 4 || this.getKing()[1] == 4){
             return 0.5;
-        }
+        }*/
         int[] quarter = new int[4];
-        if(kingPos.get(0)[0] >= 0 && kingPos.get(0)[0] <= 3 && kingPos.get(0)[1] >= 0 && kingPos.get(0)[1] <= 3){
+        if(this.getKing()[0] >= 0 && this.getKing()[0] <= 3 && this.getKing()[1] >= 0 && this.getKing()[1] <= 3){
             quarter = new int[]{0, 3, 0, 3};
         }
-        if(kingPos.get(0)[0] >= 5 && kingPos.get(0)[0] <= 8 && kingPos.get(0)[1] >= 0 && kingPos.get(0)[1] <= 3){
+        if(this.getKing()[0] >= 5 && this.getKing()[0] <= 8 && this.getKing()[1] >= 0 && this.getKing()[1] <= 3){
             quarter = new int[]{5, 8, 0, 3};
         }
-        if(kingPos.get(0)[0] >= 0 && kingPos.get(0)[0] <= 3 && kingPos.get(0)[1] >= 5 && kingPos.get(0)[1] <= 8){
+        if(this.getKing()[0] >= 0 && this.getKing()[0] <= 3 && this.getKing()[1] >= 5 && this.getKing()[1] <= 8){
             quarter = new int[]{0, 3, 5, 8};
         }
-        if(kingPos.get(0)[0] >= 5 && kingPos.get(0)[0] <= 8 && kingPos.get(0)[1] >= 5 && kingPos.get(0)[1] <= 8){
+        if(this.getKing()[0] >= 5 && this.getKing()[0] <= 8 && this.getKing()[1] >= 5 && this.getKing()[1] <= 8){
             quarter = new int[]{5, 8, 5, 8};
         }
-        for(Integer[] blackP: blackPos){
+        for(Integer[] blackP: this.getBlackP()){
             if(blackP[0] >= quarter[0] && blackP[0] <= quarter[1] && blackP[1] >= quarter[2] && blackP[1] <= quarter[3]){
                 blackNumber++;
             }
@@ -77,27 +122,57 @@ public class HeuristicWhite extends Heuristic{
     }
 
 
-    private double blackEaten(){
-        List<Integer[]> blackPos = NSOEgame.getPositionsOf(super.getState(), State.Pawn.BLACK);
-        return 1-(getNblack() / 16);
-    }
-
     protected double checkHazard(){
-        List<Integer[]> whitePos = NSOEgame.getPositionsOf(super.getState(), State.Pawn.WHITE);
+
         int numberHazard = 0;
 
-        for(Integer[] whiteP: whitePos){
-            if(super.getState().getPawn(whiteP[0]-1, whiteP[1]) == State.Pawn.BLACK){
+        for(Integer[] whiteP: this.getWhiteP()){
+            for(int i = 0 ; i < whiteP[1]; i++){
+                Integer[] coord = {whiteP[0], i};
+                State.Pawn tileS = this.getState().getPawn(whiteP[0] + 1, i);
+                State.Pawn tileD = this.getState().getPawn(whiteP[0] - 1 , i);
+                if(tileS.equalsPawn(String.valueOf(State.Pawn.BLACK)) ||
+                        tileD.equalsPawn(String.valueOf(State.Pawn.BLACK))){
 
+
+
+
+                }
             }
-            if(super.getState().getPawn(whiteP[0]+1, whiteP[1]) == State.Pawn.BLACK){
 
+            for(int i = whiteP[1] + 1 ; i < 9; i++){
+                Integer[] coord = {whiteP[0], i};
+                State.Pawn tile = this.getState().getPawn(whiteP[0], i);
+                if(tile.equalsPawn(String.valueOf(State.Pawn.BLACK)) ||
+                        tile.equalsPawn(String.valueOf(State.Pawn.WHITE)) ||
+                        this.getCitadels().contains(coord)){
+
+
+                    break;
+                }
             }
-            if(super.getState().getPawn(whiteP[0], whiteP[1]-1) == State.Pawn.BLACK){
 
+            for(int i = 0 ; i < whiteP[0]; i++){
+                Integer[] coord = {i, whiteP[1]};
+                State.Pawn tile = this.getState().getPawn(whiteP[0], i);
+                if(tile.equalsPawn(String.valueOf(State.Pawn.BLACK)) ||
+                        tile.equalsPawn(String.valueOf(State.Pawn.WHITE)) ||
+                        this.getCitadels().contains(coord)){
+
+
+                    break;
+                }
             }
-            if(super.getState().getPawn(whiteP[0], whiteP[1]+1) == State.Pawn.BLACK){
 
+            for(int i = whiteP[1] + 1 ; i < 9; i++){
+                Integer[] coord = {i, whiteP[1]};
+                State.Pawn tile = this.getState().getPawn(whiteP[0], i);
+                if(tile.equalsPawn(String.valueOf(State.Pawn.BLACK)) ||
+                        tile.equalsPawn(String.valueOf(State.Pawn.WHITE)) ||
+                        this.getCitadels().contains(coord)){
+
+                    break;
+                }
             }
         }
         return 0;

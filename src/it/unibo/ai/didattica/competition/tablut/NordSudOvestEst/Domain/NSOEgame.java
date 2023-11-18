@@ -40,7 +40,7 @@ public class NSOEgame extends GameAshtonTablut implements aima.core.search.adver
         int rowIncr[] = {1, 0, -1, 0}; //rowIncr from aima library
         int colIncr[] = {0, 1, 0, -1};
 
-        List<Action> possibleActions = new ArrayList<Action>();
+        List<Action> possibleActions = new ArrayList<>();
         State.Pawn pawns=state.getTurn().equals(State.Turn.BLACK)? State.Pawn.BLACK: State.Pawn.WHITE;
         for (Integer []pos : getPositionsOf(state, pawns)){
             int i=pos[0];
@@ -112,6 +112,7 @@ public class NSOEgame extends GameAshtonTablut implements aima.core.search.adver
         } else if (state.getTurn().equalsTurn("B")) {
             state = this.checkCaptureWhite(state, action);
         }
+
         return state;
     }
 
@@ -124,6 +125,16 @@ public class NSOEgame extends GameAshtonTablut implements aima.core.search.adver
     @Override
     public double getUtility(State state, State.Turn turn) {
 
+        if (turn.equalsTurn(String.valueOf(State.Turn.BLACK)) && turn.equalsTurn(String.valueOf(State.Turn.BLACKWIN))){
+            return Double.POSITIVE_INFINITY;
+        } else if (turn.equalsTurn(String.valueOf(State.Turn.BLACK)) && turn.equalsTurn(String.valueOf(State.Turn.WHITEWIN))) {
+            return Double.NEGATIVE_INFINITY;
+        } else if (turn.equalsTurn(String.valueOf(State.Turn.WHITE)) && turn.equalsTurn(String.valueOf(State.Turn.BLACKWIN))){
+            return Double.NEGATIVE_INFINITY;
+        } else if (turn.equalsTurn(String.valueOf(State.Turn.WHITE)) && turn.equalsTurn(String.valueOf(State.Turn.WHITEWIN))) {
+            return Double.POSITIVE_INFINITY;
+        }
+
         Heuristic h;
 
         if (turn.equalsTurn(String.valueOf(State.Turn.WHITE))){
@@ -132,7 +143,9 @@ public class NSOEgame extends GameAshtonTablut implements aima.core.search.adver
             h = new HeuristicBlack(state);
         }
 
-        return h.evaluate();
+        double v = h.evaluate();
+        System.out.println(v);
+        return v;
     }
 
     static public List<Integer[]> getPositionsOf(State state, State.Pawn pawn){
