@@ -99,7 +99,9 @@ public class NSOEgame extends GameAshtonTablut implements aima.core.search.adver
             }
 
         }
-        System.out.println(possibleActions);
+        if (possibleActions.stream().map(Action::getFrom).filter(a -> a.equals("e5")).count() > 0){
+            System.out.println("ollà");
+        }
         return possibleActions;
     }
 
