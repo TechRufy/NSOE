@@ -20,7 +20,10 @@ public class NSOEPlayer extends IterativeDeepeningAlphaBetaSearch<State, Action,
 
     @Override
     public Action makeDecision(State state) {
-        return super.makeDecision(state);
+        // setLogEnabled(Boolean.TRUE);
+        Action azione = super.makeDecision(state);
+        System.out.println("Explored a total of " + getMetrics().get(METRICS_NODES_EXPANDED) + " nodes, reaching a depth limit of " + getMetrics().get(METRICS_MAX_DEPTH));
+        return azione;
     }
 
 }

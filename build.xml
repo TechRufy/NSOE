@@ -79,8 +79,6 @@
                 <pathelement location="build"/>
             </classpath>
             <arg value="WHITE"/>
-            <arg value="60"/>
-            <arg value="localhost"/>
         </java>
     </target>
 	
@@ -92,8 +90,6 @@
                 <pathelement location="build"/>
             </classpath>
             <arg value="BLACK"/>
-            <arg value="60"/>
-            <arg value="localhost"/>
         </java>
     </target>
 

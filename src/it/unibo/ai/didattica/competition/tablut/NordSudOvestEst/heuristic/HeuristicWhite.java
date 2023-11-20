@@ -35,7 +35,7 @@ public class HeuristicWhite extends Heuristic{
         if(Arrays.equals(this.getKing(), new Integer[]{4, 4})){
             return 0;
         }else{
-            return 0.75;
+            return 1;
         }
     }
 
@@ -44,14 +44,14 @@ public class HeuristicWhite extends Heuristic{
     public double evaluate() {
 
         double K = kingExit();
-        //double CD = checkDensity();
+        double CD = checkDensity();
         double NB = 1 - super.getNblack()/16.0;
         double NW = super.getNWhite()/9.0;
         double FK = freeKing();
         double T = Inthrone();
         double X = XPosition();
         double KP = 20;
-        //double CDP = 4;
+        double CDP = 0;
         double NBP = 2;
         double NWP = 4;
         double FKP = 15;
@@ -61,7 +61,7 @@ public class HeuristicWhite extends Heuristic{
 
 
 
-        return (K*KP + NW*NWP + NB*NBP + FK*FKP + T*TP + X)/(KP + NWP + NBP + FKP + TP + XP);
+        return (K*KP + NW*NWP + NB*NBP + FK*FKP + X*XP + T*TP + CD*CDP )/(KP +  CDP + NBP + NWP + FKP + TP + XP);
 
     }
     private double kingExit(){
