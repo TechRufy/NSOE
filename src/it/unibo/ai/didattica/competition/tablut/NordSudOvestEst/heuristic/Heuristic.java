@@ -126,12 +126,6 @@ public class Heuristic {
                 count += 1;
             }
         }
-
-        if(count == 0){
-
-        }else{
-            System.out.println("almeno una libera");
-        }
         return count * 0.25;
 
     }

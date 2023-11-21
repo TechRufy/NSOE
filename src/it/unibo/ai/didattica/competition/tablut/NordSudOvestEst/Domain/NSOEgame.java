@@ -42,7 +42,11 @@ public class NSOEgame extends GameAshtonTablut implements aima.core.search.adver
 
         List<Action> possibleActions = new ArrayList<>();
         State.Pawn pawns=state.getTurn().equals(State.Turn.BLACK)? State.Pawn.BLACK: State.Pawn.WHITE;
-        for (Integer []pos : getPositionsOf(state, pawns)){
+        List<Integer[]> pawn = getPositionsOf(state, pawns);
+        if(state.getTurn().equalsTurn(String.valueOf(State.Turn.WHITE))){
+         pawn.addAll(getPositionsOf(state,State.Pawn.KING));
+        }
+        for (Integer []pos : pawn){
             int i=pos[0];
             int j=pos[1];
 
@@ -98,10 +102,10 @@ public class NSOEgame extends GameAshtonTablut implements aima.core.search.adver
                 }
             }
 
+
+
         }
-        if (possibleActions.stream().map(Action::getFrom).filter(a -> a.equals("e5")).count() > 0){
-            System.out.println("ollà");
-        }
+
         return possibleActions;
     }
 
