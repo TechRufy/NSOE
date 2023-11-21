@@ -126,7 +126,6 @@ public class Heuristic {
                 count += 1;
             }
         }
-
         return count * 0.25;
 
     }

@@ -102,7 +102,7 @@ public class HeuristicWhite extends Heuristic{
     public double evaluate() {
 
         double K = kingExit();
-        //double CD = checkDensity();
+        double CD = checkDensity();
         double NB = 1 - super.getNblack()/16.0;
         double NW = super.getNWhite()/9.0;
         double FK = freeKing();
@@ -111,7 +111,7 @@ public class HeuristicWhite extends Heuristic{
         double KS = kingStrategic();
 
         double KP = 20;
-        //double CDP = 4;
+        double CDP = 0;
         double NBP = 2;
         double NWP = 4;
         double FKP = 40;
@@ -119,7 +119,7 @@ public class HeuristicWhite extends Heuristic{
         double XP = 50;
         double KSP = 50;
 
-        return (K*KP + KS*KSP + NW*NWP + NB*NBP + FK*FKP + T*TP + X)/(KP + KSP + NWP + NBP + TP + FKP + XP);
+        return (K*KP + KS*KSP + NW*NWP + NB*NBP + FK*FKP + T*TP + X*XP)/(KP + KSP + NWP + NBP + TP + FKP + XP);
 
     }
     private double kingExit(){
