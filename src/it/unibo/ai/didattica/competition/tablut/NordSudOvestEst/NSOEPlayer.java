@@ -13,7 +13,7 @@ public class NSOEPlayer extends IterativeDeepeningAlphaBetaSearch<State, Action,
     @Override
     protected double eval(State state, State.Turn player) {
         // needed to make heuristicEvaluationUsed = true, if the state evaluated isn't terminal
-        super.eval(state, player);
+        super.eval(state, player); //super.eval
         // return heuristic value for given state
         return game.getUtility(state, player);
     }

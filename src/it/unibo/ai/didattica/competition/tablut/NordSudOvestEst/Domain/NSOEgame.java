@@ -125,13 +125,13 @@ public class NSOEgame extends GameAshtonTablut implements aima.core.search.adver
     @Override
     public double getUtility(State state, State.Turn turn) {
 
-        if (turn.equalsTurn(String.valueOf(State.Turn.BLACK)) && turn.equalsTurn(String.valueOf(State.Turn.BLACKWIN))){
+        if (turn.equalsTurn(String.valueOf(State.Turn.BLACK)) && state.getTurn().equalsTurn(String.valueOf(State.Turn.BLACKWIN))){
             return Double.POSITIVE_INFINITY;
-        } else if (turn.equalsTurn(String.valueOf(State.Turn.BLACK)) && turn.equalsTurn(String.valueOf(State.Turn.WHITEWIN))) {
+        } else if (turn.equalsTurn(String.valueOf(State.Turn.BLACK)) && state.getTurn().equalsTurn(String.valueOf(State.Turn.WHITEWIN))) {
             return Double.NEGATIVE_INFINITY;
-        } else if (turn.equalsTurn(String.valueOf(State.Turn.WHITE)) && turn.equalsTurn(String.valueOf(State.Turn.BLACKWIN))){
+        } else if (turn.equalsTurn(String.valueOf(State.Turn.WHITE)) && state.getTurn().equalsTurn(String.valueOf(State.Turn.BLACKWIN))){
             return Double.NEGATIVE_INFINITY;
-        } else if (turn.equalsTurn(String.valueOf(State.Turn.WHITE)) && turn.equalsTurn(String.valueOf(State.Turn.WHITEWIN))) {
+        } else if (turn.equalsTurn(String.valueOf(State.Turn.WHITE)) && state.getTurn().equalsTurn(String.valueOf(State.Turn.WHITEWIN))) {
             return Double.POSITIVE_INFINITY;
         }
 
@@ -144,7 +144,6 @@ public class NSOEgame extends GameAshtonTablut implements aima.core.search.adver
         }
 
         double v = h.evaluate();
-        System.out.println(v);
         return v;
     }
 

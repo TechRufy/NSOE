@@ -132,19 +132,19 @@ public class HeuristicBlack extends Heuristic {
         double KC = KingCross();
         double NB = super.getNblack()/16.0;
         double NW = 1 - super.getNWhite()/9.0;
-        double FK = 1 - freeKing();
+        double FK = freeKing();
         double BD = bigDiagonal();
-        double KP =  3;
-        double SDP = 14;
+        double KP =  1;
+        double SDP = 20;
         double KCP = 4;
         double NBP = 4;
         double NWP = 5;
-        double FKP = 20;
+        double FKP = 50;
         double BDP = 20;
 
 
 
-        return (K*KP  + KC*KCP + SD*SDP + NW*NWP + NB*NBP + FK*FKP + BD*BDP)/(KP +  KCP + NWP + NBP + FKP+ SDP + BDP);
+        return (K*KP + KC*KCP + SD*SDP + NW*NWP + NB*NBP + FK*FKP + BD*BDP)/(KP +  KCP + NWP + NBP + FKP+ SDP + BDP);
     }
 
 }
