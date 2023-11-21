@@ -39,6 +39,64 @@ public class HeuristicWhite extends Heuristic{
         }
     }
 
+    public double kingStrategic(){
+        ArrayList<Integer[]> kingStrategicPosition1 = new ArrayList<>(Arrays.asList(
+                new Integer[]{2, 2},
+                new Integer[]{6, 2},
+                new Integer[]{2, 6},
+                new Integer[]{6, 6}));
+        /*
+        ArrayList<Integer[]> kingStrategicPosition2 = new ArrayList<>(Arrays.asList(
+                new Integer[]{4, 2},
+                new Integer[]{2, 4},
+                new Integer[]{4, 6},
+                new Integer[]{6, 4}));
+        */
+        List<Integer[]> blackP = getBlackP();
+
+        Integer[] p1 = {4, 2};
+        Integer[] p2 = {2, 4};
+        Integer[] p3 = {4, 6};
+        Integer[] p4 = {6, 4};
+        Integer[] b1 = {4, 3};
+        Integer[] b2 = {3, 4};
+        Integer[] b3 = {4, 5};
+        Integer[] b4 = {5, 4};
+
+        for(Integer[] tile:kingStrategicPosition1){
+            if(Arrays.equals(this.getKing(), tile)){
+                return 2;
+            }
+        }
+        for(Integer[] tileBlack:blackP){
+            if(Arrays.equals(this.getKing(), p1) && Arrays.equals(tileBlack, b1)){
+                return 0;
+            }
+            if(Arrays.equals(this.getKing(), p2) && Arrays.equals(tileBlack, b2)){
+                return 0;
+            }
+            if(Arrays.equals(this.getKing(), p3) && Arrays.equals(tileBlack, b3)){
+                return 0;
+            }
+            if(Arrays.equals(this.getKing(), p4) && Arrays.equals(tileBlack, b4)){
+                return 0;
+            }
+            if(Arrays.equals(this.getKing(), p1)){
+                return 2;
+            }
+            if(Arrays.equals(this.getKing(), p2)){
+                return 2;
+            }
+            if(Arrays.equals(this.getKing(), p3)){
+                return 2;
+            }
+            if(Arrays.equals(this.getKing(), p4)){
+                return 2;
+            }
+        }
+        return 0;
+    }
+
 
     @Override
     public double evaluate() {
@@ -50,18 +108,18 @@ public class HeuristicWhite extends Heuristic{
         double FK = freeKing();
         double T = Inthrone();
         double X = XPosition();
+        double KS = kingStrategic();
+
         double KP = 20;
         double CDP = 0;
         double NBP = 2;
         double NWP = 4;
-        double FKP = 15;
-        double TP = 15;
-        double XP = 4;
+        double FKP = 40;
+        double TP = 20;
+        double XP = 50;
+        double KSP = 50;
 
-
-
-
-        return (K*KP + NW*NWP + NB*NBP + FK*FKP + X*XP + T*TP + CD*CDP )/(KP +  CDP + NBP + NWP + FKP + TP + XP);
+        return (K*KP + KS*KSP + NW*NWP + NB*NBP + FK*FKP + T*TP + X*XP)/(KP + KSP + NWP + NBP + TP + FKP + XP);
 
     }
     private double kingExit(){
