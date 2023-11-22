@@ -111,14 +111,14 @@ public class HeuristicWhite extends Heuristic {
         double X = XPosition();
         double KS = kingStrategic();
 
-        double KP = 20;
+        double KP = 7;
         double CDP = 0;
-        double NBP = 2;
-        double NWP = 4;
-        double FKP = 40;
-        double TP = 20;
-        double XP = 50;
-        double KSP = 50;
+        double NBP = 5;
+        double NWP = 20;
+        double FKP = 12;
+        double TP = 0;
+        double XP = 7;
+        double KSP = 10;
 
         return (K * KP + KS * KSP + NW * NWP + NB * NBP + FK * FKP + T * TP + X * XP) / (KP + KSP + NWP + NBP + TP + FKP + XP);
 
