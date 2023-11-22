@@ -6,12 +6,12 @@ import it.unibo.ai.didattica.competition.tablut.domain.State;
 
 import java.util.*;
 
-public class HeuristicWhite extends Heuristic{
+public class HeuristicWhite extends Heuristic {
     public HeuristicWhite(State state) {
         super(state);
     }
 
-    public double XPosition(){
+    public double XPosition() {
         ArrayList<Integer[]> StrategicPosition = new ArrayList<>(Arrays.asList(
                 new Integer[]{2, 2},
                 new Integer[]{3, 3},
@@ -20,38 +20,39 @@ public class HeuristicWhite extends Heuristic{
                 new Integer[]{5, 5},
                 new Integer[]{6, 6},
                 new Integer[]{3, 5},
-                new Integer[]{2, 6}));
+                new Integer[]{2, 6},
+                new Integer[]{1, 3},
+                new Integer[]{1, 5},
+                new Integer[]{3, 1},
+                new Integer[]{5, 1},
+                new Integer[]{3, 7},
+                new Integer[]{5, 7},
+                new Integer[]{7, 3},
+                new Integer[]{7, 5}));
 
 
+        double c = (double) StrategicPosition.stream().filter(tile -> this.getState().getPawn(tile[0], tile[1]).equals(State.Pawn.WHITE)).count();
 
-        double c = (double) StrategicPosition.stream().filter(tile -> this.getState().getPawn(tile[0],tile[1]).equals(State.Pawn.WHITE)).count();
-
-        return c/8;
+        return c / 16;
 
 
     }
 
-    public double Inthrone(){
-        if(Arrays.equals(this.getKing(), new Integer[]{4, 4})){
+    public double Inthrone() {
+        if (Arrays.equals(this.getKing(), new Integer[]{4, 4})) {
             return 0;
-        }else{
-            return 1;
+        } else {
+            return 0.4;
         }
     }
 
-    public double kingStrategic(){
+    public double kingStrategic() {
         ArrayList<Integer[]> kingStrategicPosition1 = new ArrayList<>(Arrays.asList(
                 new Integer[]{2, 2},
                 new Integer[]{6, 2},
                 new Integer[]{2, 6},
                 new Integer[]{6, 6}));
-        /*
-        ArrayList<Integer[]> kingStrategicPosition2 = new ArrayList<>(Arrays.asList(
-                new Integer[]{4, 2},
-                new Integer[]{2, 4},
-                new Integer[]{4, 6},
-                new Integer[]{6, 4}));
-        */
+
         List<Integer[]> blackP = getBlackP();
 
         Integer[] p1 = {4, 2};
@@ -63,34 +64,34 @@ public class HeuristicWhite extends Heuristic{
         Integer[] b3 = {4, 5};
         Integer[] b4 = {5, 4};
 
-        for(Integer[] tile:kingStrategicPosition1){
-            if(Arrays.equals(this.getKing(), tile)){
+        for (Integer[] tile : kingStrategicPosition1) {
+            if (Arrays.equals(this.getKing(), tile)) {
                 return 2;
             }
         }
-        for(Integer[] tileBlack:blackP){
-            if(Arrays.equals(this.getKing(), p1) && Arrays.equals(tileBlack, b1)){
+        for (Integer[] tileBlack : blackP) {
+            if (Arrays.equals(this.getKing(), p1) && Arrays.equals(tileBlack, b1)) {
                 return 0;
             }
-            if(Arrays.equals(this.getKing(), p2) && Arrays.equals(tileBlack, b2)){
+            if (Arrays.equals(this.getKing(), p2) && Arrays.equals(tileBlack, b2)) {
                 return 0;
             }
-            if(Arrays.equals(this.getKing(), p3) && Arrays.equals(tileBlack, b3)){
+            if (Arrays.equals(this.getKing(), p3) && Arrays.equals(tileBlack, b3)) {
                 return 0;
             }
-            if(Arrays.equals(this.getKing(), p4) && Arrays.equals(tileBlack, b4)){
+            if (Arrays.equals(this.getKing(), p4) && Arrays.equals(tileBlack, b4)) {
                 return 0;
             }
-            if(Arrays.equals(this.getKing(), p1)){
+            if (Arrays.equals(this.getKing(), p1)) {
                 return 2;
             }
-            if(Arrays.equals(this.getKing(), p2)){
+            if (Arrays.equals(this.getKing(), p2)) {
                 return 2;
             }
-            if(Arrays.equals(this.getKing(), p3)){
+            if (Arrays.equals(this.getKing(), p3)) {
                 return 2;
             }
-            if(Arrays.equals(this.getKing(), p4)){
+            if (Arrays.equals(this.getKing(), p4)) {
                 return 2;
             }
         }
@@ -103,8 +104,8 @@ public class HeuristicWhite extends Heuristic{
 
         double K = kingExit();
         double CD = checkDensity();
-        double NB = 1 - super.getNblack()/16.0;
-        double NW = super.getNWhite()/9.0;
+        double NB = 1 - super.getNblack() / 16.0;
+        double NW = super.getNWhite() / 9.0;
         double FK = freeKing();
         double T = Inthrone();
         double X = XPosition();
@@ -119,127 +120,66 @@ public class HeuristicWhite extends Heuristic{
         double XP = 50;
         double KSP = 50;
 
-        return (K*KP + KS*KSP + NW*NWP + NB*NBP + FK*FKP + T*TP + X*XP)/(KP + KSP + NWP + NBP + TP + FKP + XP);
+        return (K * KP + KS * KSP + NW * NWP + NB * NBP + FK * FKP + T * TP + X * XP) / (KP + KSP + NWP + NBP + TP + FKP + XP);
 
     }
-    private double kingExit(){
+
+    private double kingExit() {
         List<Integer[]> winTiles = (List<Integer[]>) new ArrayList<>(Arrays.asList(
-                new Integer[]{0,1},
-                new Integer[]{0,2},
-                new Integer[]{0,6},
-                new Integer[]{0,7},
-                new Integer[]{1,0},
-                new Integer[]{2,0},
-                new Integer[]{6,0},
-                new Integer[]{7,0},
-                new Integer[]{8,1},
-                new Integer[]{8,2},
-                new Integer[]{8,6},
-                new Integer[]{8,7},
-                new Integer[]{1,8},
-                new Integer[]{2,8},
-                new Integer[]{6,8},
-                new Integer[]{7,8}
+                new Integer[]{0, 1},
+                new Integer[]{0, 2},
+                new Integer[]{0, 6},
+                new Integer[]{0, 7},
+                new Integer[]{1, 0},
+                new Integer[]{2, 0},
+                new Integer[]{6, 0},
+                new Integer[]{7, 0},
+                new Integer[]{8, 1},
+                new Integer[]{8, 2},
+                new Integer[]{8, 6},
+                new Integer[]{8, 7},
+                new Integer[]{1, 8},
+                new Integer[]{2, 8},
+                new Integer[]{6, 8},
+                new Integer[]{7, 8}
         ));
         List<Integer[]> kingPos = NSOEgame.getPositionsOf(super.getState(), State.Pawn.KING);
         int min = 10;
-        for(Integer[] tile: winTiles){
+        for (Integer[] tile : winTiles) {
             int mnd = super.ManhatthanDistance(kingPos.get(0), tile);
-            if(min>mnd){
+            if (min > mnd) {
                 min = mnd;
             }
         }
-        return 1-((double) min /6);
+        return 1 - ((double) min / 6);
     }
 
-    private double checkDensity(){
+    private double checkDensity() {
 
         int blackNumber = 0;
         /*if(this.getKing()[0] == 4 || this.getKing()[1] == 4){
             return 0.5;
         }*/
         int[] quarter = new int[4];
-        if(this.getKing()[0] >= 0 && this.getKing()[0] <= 3 && this.getKing()[1] >= 0 && this.getKing()[1] <= 3){
+        if (this.getKing()[0] >= 0 && this.getKing()[0] <= 3 && this.getKing()[1] >= 0 && this.getKing()[1] <= 3) {
             quarter = new int[]{0, 3, 0, 3};
         }
-        if(this.getKing()[0] >= 5 && this.getKing()[0] <= 8 && this.getKing()[1] >= 0 && this.getKing()[1] <= 3){
+        if (this.getKing()[0] >= 5 && this.getKing()[0] <= 8 && this.getKing()[1] >= 0 && this.getKing()[1] <= 3) {
             quarter = new int[]{5, 8, 0, 3};
         }
-        if(this.getKing()[0] >= 0 && this.getKing()[0] <= 3 && this.getKing()[1] >= 5 && this.getKing()[1] <= 8){
+        if (this.getKing()[0] >= 0 && this.getKing()[0] <= 3 && this.getKing()[1] >= 5 && this.getKing()[1] <= 8) {
             quarter = new int[]{0, 3, 5, 8};
         }
-        if(this.getKing()[0] >= 5 && this.getKing()[0] <= 8 && this.getKing()[1] >= 5 && this.getKing()[1] <= 8){
+        if (this.getKing()[0] >= 5 && this.getKing()[0] <= 8 && this.getKing()[1] >= 5 && this.getKing()[1] <= 8) {
             quarter = new int[]{5, 8, 5, 8};
         }
-        for(Integer[] blackP: this.getBlackP()){
-            if(blackP[0] >= quarter[0] && blackP[0] <= quarter[1] && blackP[1] >= quarter[2] && blackP[1] <= quarter[3]){
+        for (Integer[] blackP : this.getBlackP()) {
+            if (blackP[0] >= quarter[0] && blackP[0] <= quarter[1] && blackP[1] >= quarter[2] && blackP[1] <= quarter[3]) {
                 blackNumber++;
             }
         }
-        return 1-((double)blackNumber / getNblack());
+        return 1 - ((double) blackNumber / getNblack());
     }
-
-
-    protected double checkHazard(){
-
-        int numberHazard = 0;
-
-        for(Integer[] whiteP: this.getWhiteP()){
-            for(int i = 0 ; i < whiteP[1]; i++){
-                Integer[] coord = {whiteP[0], i};
-                State.Pawn tileS = this.getState().getPawn(whiteP[0] + 1, i);
-                State.Pawn tileD = this.getState().getPawn(whiteP[0] - 1 , i);
-                if(tileS.equalsPawn(String.valueOf(State.Pawn.BLACK)) ||
-                        tileD.equalsPawn(String.valueOf(State.Pawn.BLACK))){
-
-
-
-
-                }
-            }
-
-            for(int i = whiteP[1] + 1 ; i < 9; i++){
-                Integer[] coord = {whiteP[0], i};
-                State.Pawn tile = this.getState().getPawn(whiteP[0], i);
-                if(tile.equalsPawn(String.valueOf(State.Pawn.BLACK)) ||
-                        tile.equalsPawn(String.valueOf(State.Pawn.WHITE)) ||
-                        this.getCitadels().contains(coord)){
-
-
-                    break;
-                }
-            }
-
-            for(int i = 0 ; i < whiteP[0]; i++){
-                Integer[] coord = {i, whiteP[1]};
-                State.Pawn tile = this.getState().getPawn(whiteP[0], i);
-                if(tile.equalsPawn(String.valueOf(State.Pawn.BLACK)) ||
-                        tile.equalsPawn(String.valueOf(State.Pawn.WHITE)) ||
-                        this.getCitadels().contains(coord)){
-
-
-                    break;
-                }
-            }
-
-            for(int i = whiteP[1] + 1 ; i < 9; i++){
-                Integer[] coord = {i, whiteP[1]};
-                State.Pawn tile = this.getState().getPawn(whiteP[0], i);
-                if(tile.equalsPawn(String.valueOf(State.Pawn.BLACK)) ||
-                        tile.equalsPawn(String.valueOf(State.Pawn.WHITE)) ||
-                        this.getCitadels().contains(coord)){
-
-                    break;
-                }
-            }
-        }
-        return 0;
-    }
-
-    private double checkThreat(){
-        return 0;
-    }
-
 
 
 }
