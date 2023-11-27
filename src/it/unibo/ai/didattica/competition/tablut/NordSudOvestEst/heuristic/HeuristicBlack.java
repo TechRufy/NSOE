@@ -21,10 +21,10 @@ public class HeuristicBlack extends Heuristic {
 
         for (Integer[] p: this.getBlackP()) {
 
-            Integer[] sopra = {this.getKing()[0] + 1, this.getKing()[1]};
-            Integer[] sotto = {this.getKing()[0] - 1, this.getKing()[1]};
-            Integer[] destra = {this.getKing()[0] , this.getKing()[1] + 1};
-            Integer[] sinistra = {this.getKing()[0] + 1, this.getKing()[1] - 1};
+            Integer[] sopra = {this.getKing()[0] + 2, this.getKing()[1]};
+            Integer[] sotto = {this.getKing()[0] - 2, this.getKing()[1]};
+            Integer[] destra = {this.getKing()[0], this.getKing()[1] + 2};
+            Integer[] sinistra = {this.getKing()[0], this.getKing()[1] - 2};
 
             ArrayList<Integer> Dcroce = new ArrayList<>();
             Dcroce.add(ManhatthanDistance(p,sopra));
@@ -39,11 +39,11 @@ public class HeuristicBlack extends Heuristic {
 
             double d = average.isPresent() ? average.getAsDouble() : 0;
 
-            return d/13;
+            return d/13.0;
     }
 
 
-    public double smallDiagonal(){
+    public double OuterDiagonal(){
         ArrayList<Integer[]> StrategicPosition = new ArrayList<>(Arrays.asList(
                 new Integer[]{1, 2},
                 new Integer[]{2, 1},
@@ -58,33 +58,25 @@ public class HeuristicBlack extends Heuristic {
 
         double c = (double) StrategicPosition.stream().filter(tile -> this.getState().getPawn(tile[0],tile[1]).equals(State.Pawn.WHITE)).count();
 
-        return c/8;
+        return c/8.0;
 
 
     }
 
-    public double bigDiagonal(){
+    public double InnerDiagonal(){
         ArrayList<Integer[]> StrategicPosition = new ArrayList<>(Arrays.asList(
-                new Integer[]{3, 1},
-                new Integer[]{2, 2},
-                new Integer[]{1, 3},
-                new Integer[]{5, 1},
-                new Integer[]{6, 2},
-                new Integer[]{7, 3},
-                new Integer[]{7, 5},
-                new Integer[]{6, 6},
-                new Integer[]{5, 7},
-                new Integer[]{3, 7},
-                new Integer[]{2, 6},
-                new Integer[]{1, 5}));
-
-
+                new Integer[]{3, 2},
+                new Integer[]{2, 3},
+                new Integer[]{2, 5},
+                new Integer[]{3, 6},
+                new Integer[]{5, 6},
+                new Integer[]{6, 5},
+                new Integer[]{6, 3},
+                new Integer[]{5, 2}));
 
         double c = (double) StrategicPosition.stream().filter(tile -> this.getState().getPawn(tile[0],tile[1]).equals(State.Pawn.WHITE)).count();
 
-        return c/12;
-
-
+        return c/8.0;
     }
 
     public double KingCross(){
@@ -95,7 +87,7 @@ public class HeuristicBlack extends Heuristic {
                 new Integer[]{this.getKing()[0],this.getKing()[1] + 1},
                 new Integer[]{this.getKing()[0],this.getKing()[1] - 1}));
 
-        double value = 0;
+        double value = 0.0;
         Boolean flag = Boolean.FALSE;
         for (Integer[] p : Cross) {
             if (super.getState().getPawn(p[0],p[1]) == State.Pawn.BLACK || super.getState().getPawn(p[0],p[1]) == State.Pawn.THRONE){
@@ -111,11 +103,11 @@ public class HeuristicBlack extends Heuristic {
         }
 
         if (value == 0.8 && flag == Boolean.FALSE){
-            value = 1;
+            value = 1.0;
         }
 
         if (value == 0.7 && flag == Boolean.TRUE){
-            value = 1;
+            value = 1.0;
         }
 
 
@@ -128,23 +120,23 @@ public class HeuristicBlack extends Heuristic {
     public double evaluate() {
 
         double K = HKingDistance();
-        double SD = smallDiagonal();
+        double OD = OuterDiagonal();
         double KC = KingCross();
         double NB = super.getNblack()/16.0;
-        double NW = 1 - super.getNWhite()/9.0;
+        double NW = 1.0 - super.getNWhite()/9.0;
         double FK = freeKing();
-        double BD = bigDiagonal();
-        double KP =  1;
-        double SDP = 20;
-        double KCP = 4;
-        double NBP = 4;
-        double NWP = 5;
-        double FKP = 50;
-        double BDP = 20;
+        double ID = InnerDiagonal();
+        double KP =  5.0;
+        double ODP = 25.0;
+        double KCP = 2.0;
+        double NBP = 15.0;
+        double NWP = 8.0;
+        double FKP = 20.0;
+        double IDP = 10.0;
 
 
 
-        return (K*KP + KC*KCP + SD*SDP + NW*NWP + NB*NBP + FK*FKP + BD*BDP)/(KP +  KCP + NWP + NBP + FKP+ SDP + BDP);
+        return (K*KP + KC*KCP + OD*ODP + NW*NWP + NB*NBP + FK*FKP + ID*IDP); ///(KP +  KCP + NWP + NBP + FKP+ ODP + IDP);
     }
 
 }
