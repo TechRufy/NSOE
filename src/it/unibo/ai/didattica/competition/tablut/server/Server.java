@@ -93,6 +93,8 @@ public class Server implements Runnable {
 	 */
 	protected int gameC;
 
+	private static int Endgame = 5;
+
 	public Server(int timeout, int cacheSize, int numErrors, int repeated, int game, boolean gui) {
 		this.gameC = game;
 		this.enableGui = gui;
@@ -103,6 +105,11 @@ public class Server implements Runnable {
 		this.gson = new Gson();
 	}
 
+
+	public static int getEndgame() {
+		return Endgame;
+	}
+
 	public void initializeGUI(State state) {
 		this.theGui = new Gui(this.gameC);
 		this.theGui.update(state);
@@ -110,12 +117,12 @@ public class Server implements Runnable {
 
 	/**
 	 * Server initialiazer.
-	 * 
+	 *
 	 * @param args
 	 *            the time for the move, the size of the cache for monitoring
 	 *            draws, the number of errors allowed, the type of game, whether
 	 *            the GUI should be used or not
-	 * 
+	 *
 	 */
 	public static void main(String[] args) {
 		int time = 60;
@@ -661,18 +668,21 @@ public class Server implements Runnable {
 				this.game.endGame(state);
 				System.out.println("END OF THE GAME");
 				System.out.println("RESULT: PLAYER BLACK WIN");
+				Endgame = -1;
 				endgame = true;
 				break;
 			case WHITEWIN:
 				this.game.endGame(state);
 				System.out.println("END OF THE GAME");
 				System.out.println("RESULT: PLAYER WHITE WIN");
+				Endgame = 1;
 				endgame = true;
 				break;
 			case DRAW:
 				this.game.endGame(state);
 				System.out.println("END OF THE GAME");
 				System.out.println("RESULT: DRAW");
+				Endgame = 0;
 				endgame = true;
 				break;
 			default:

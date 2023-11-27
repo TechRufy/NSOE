@@ -138,10 +138,8 @@ public class NSOEgame extends GameAshtonTablut implements aima.core.search.adver
         } else if (turn.equalsTurn(String.valueOf(State.Turn.BLACK)) && state.getTurn().equalsTurn(String.valueOf(State.Turn.WHITEWIN))) {
             return Double.NEGATIVE_INFINITY;
         } else if (turn.equalsTurn(String.valueOf(State.Turn.WHITE)) && state.getTurn().equalsTurn(String.valueOf(State.Turn.BLACKWIN))){
-            System.out.println("bianco perde");
             return Double.NEGATIVE_INFINITY;
         } else if (turn.equalsTurn(String.valueOf(State.Turn.WHITE)) && state.getTurn().equalsTurn(String.valueOf(State.Turn.WHITEWIN))) {
-            System.out.println("bianco vince");
             return Double.POSITIVE_INFINITY;
         }
 
