@@ -33,7 +33,7 @@ public class HeuristicWhite extends Heuristic {
 
         double c = (double) StrategicPosition.stream().filter(tile -> this.getState().getPawn(tile[0], tile[1]).equals(State.Pawn.WHITE)).count();
 
-        return c / 16;
+        return c / 16.0;
 
 
     }
@@ -42,7 +42,7 @@ public class HeuristicWhite extends Heuristic {
         if (Arrays.equals(this.getKing(), new Integer[]{4, 4})) {
             return 0;
         } else {
-            return 0.4;
+            return 0.5;
         }
     }
 
@@ -111,21 +111,21 @@ public class HeuristicWhite extends Heuristic {
         double X = XPosition();
         double KS = kingStrategic();
 
-        double KP = 7;
-        double CDP = 0;
-        double NBP = 5;
-        double NWP = 20;
-        double FKP = 12;
-        double TP = 0;
-        double XP = 7;
-        double KSP = 10;
+        double KP = 5.0;
+        double CDP = 20.0;
+        double NBP = 60.0;
+        double NWP = 100.0;
+        double FKP = 15.0;
+        double TP = 5.0;
+        double XP = 10.0;
+        double KSP = 20.0;
 
-        return (K * KP + KS * KSP + NW * NWP + NB * NBP + FK * FKP + T * TP + X * XP) / (KP + KSP + NWP + NBP + TP + FKP + XP);
+        return (K * KP + KS * KSP + NW * NWP + NB * NBP + FK * FKP + T * TP + X * XP + CD*CDP); // / (CDP + KP + KSP + NWP + NBP + TP + FKP + XP);
 
     }
 
     private double kingExit() {
-        List<Integer[]> winTiles = (List<Integer[]>) new ArrayList<>(Arrays.asList(
+        List<Integer[]> winTiles = new ArrayList<>(Arrays.asList(
                 new Integer[]{0, 1},
                 new Integer[]{0, 2},
                 new Integer[]{0, 6},
@@ -143,15 +143,14 @@ public class HeuristicWhite extends Heuristic {
                 new Integer[]{6, 8},
                 new Integer[]{7, 8}
         ));
-        List<Integer[]> kingPos = NSOEgame.getPositionsOf(super.getState(), State.Pawn.KING);
         int min = 10;
         for (Integer[] tile : winTiles) {
-            int mnd = super.ManhatthanDistance(kingPos.get(0), tile);
+            int mnd = super.ManhatthanDistance(this.getKing(), tile);
             if (min > mnd) {
                 min = mnd;
             }
         }
-        return 1 - ((double) min / 6);
+        return 1 - ((double) min / 6.0);
     }
 
     private double checkDensity() {
