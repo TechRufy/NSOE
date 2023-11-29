@@ -137,10 +137,6 @@ public class Heuristic {
 
     }
 
-    public List<Integer[]> getWhiteP() {
-        return whiteP;
-    }
-
     public double evaluate(){
 
         return 0;
@@ -153,6 +149,10 @@ public class Heuristic {
 
     public List<Integer[]> getBlackP() {
         return blackP;
+    }
+
+    public List<Integer[]> getWhiteP() {
+        return whiteP;
     }
 
     public ArrayList<Integer[]> getCitadels() {

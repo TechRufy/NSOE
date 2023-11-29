@@ -37,7 +37,7 @@ public class HeuristicWhite extends Heuristic {
 
 
     }
-
+/*
     public double Inthrone() {
         if (Arrays.equals(this.getKing(), new Integer[]{4, 4})) {
             return 0;
@@ -45,6 +45,8 @@ public class HeuristicWhite extends Heuristic {
             return 0.5;
         }
     }
+
+ */
 
     public double kingStrategic() {
         ArrayList<Integer[]> kingStrategicPosition1 = new ArrayList<>(Arrays.asList(
@@ -107,20 +109,22 @@ public class HeuristicWhite extends Heuristic {
         double NB = 1 - super.getNblack() / 16.0;
         double NW = super.getNWhite() / 9.0;
         double FK = freeKing();
-        double T = Inthrone();
+        //double T = Inthrone();
         double X = XPosition();
         double KS = kingStrategic();
+        double WC = WhitePawnCross();
 
-        double KP = 10.0;
-        double CDP = 30.0;
-        double NBP = 50.0;
-        double NWP = 100.0;
-        double FKP = 10.0;
-        double TP = 5.0;
-        double XP = 20.0;
-        double KSP = 40.0;
+        double KP = 5.0;
+        double CDP = 10.0;
+        double NBP = 30.0;
+        double NWP = 40.0;
+        double FKP = 15.0;
+        //double TP = 0.0;
+        double XP = 15.0;
+        double KSP = 5.0;
+        double WCP = 10.0;
 
-        return (K * KP + KS * KSP + NW * NWP + NB * NBP + FK * FKP + T * TP + X * XP + CD*CDP); // / (CDP + KP + KSP + NWP + NBP + TP + FKP + XP);
+        return (K * KP + KS * KSP + NW * NWP + NB * NBP + FK * FKP + X * XP + CD*CDP + WC*WCP);
 
     }
 
@@ -180,5 +184,42 @@ public class HeuristicWhite extends Heuristic {
         return 1 - ((double) blackNumber / getNblack());
     }
 
+    public double WhitePawnCross(){
+
+        double val = 0.0;
+
+        for(Integer[] pawn : this.getWhiteP()){
+
+            if(pawn[0] < 8 && super.getState().getPawn(pawn[0]+1, pawn[1]) == State.Pawn.EMPTY){
+                val += 0.25;
+            }
+            if(pawn[1] < 8 && super.getState().getPawn(pawn[0], pawn[1]+1) == State.Pawn.EMPTY){
+                val += 0.25;
+            }
+            if(pawn[0] > 0 && super.getState().getPawn(pawn[0]-1, pawn[1]) == State.Pawn.EMPTY){
+                val += 0.25;
+            }
+            if(pawn[1] > 0 && super.getState().getPawn(pawn[0], pawn[1]-1) == State.Pawn.EMPTY){
+                val += 0.25;
+            }
+            if(pawn[0] < 8 && (super.getState().getPawn(pawn[0]+1, pawn[1]) == State.Pawn.BLACK ||
+                    super.getState().getPawn(pawn[0]+1, pawn[1]) == State.Pawn.KING)){
+                val += 0.125;
+            }
+            if(pawn[1] < 8 && (super.getState().getPawn(pawn[0], pawn[1]+1) == State.Pawn.BLACK ||
+                    super.getState().getPawn(pawn[0], pawn[1]+1) == State.Pawn.KING)){
+                val += 0.125;
+            }
+            if(pawn[0] > 0 && (super.getState().getPawn(pawn[0]-1, pawn[1]) == State.Pawn.BLACK ||
+                    super.getState().getPawn(pawn[0]-1, pawn[1]) == State.Pawn.KING)){
+                val += 0.125;
+            }
+            if(pawn[1] > 0 && (super.getState().getPawn(pawn[0], pawn[1]-1) == State.Pawn.BLACK ||
+                    super.getState().getPawn(pawn[0], pawn[1]-1) == State.Pawn.KING)){
+                val += 0.125;
+            }
+        }
+        return val/this.getNWhite();
+    }
 
 }
