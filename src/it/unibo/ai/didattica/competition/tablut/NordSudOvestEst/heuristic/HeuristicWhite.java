@@ -33,18 +33,20 @@ public class HeuristicWhite extends Heuristic {
 
         double c = (double) StrategicPosition.stream().filter(tile -> this.getState().getPawn(tile[0], tile[1]).equals(State.Pawn.WHITE)).count();
 
-        return c / 16;
+        return c / 16.0;
 
 
     }
-
+/*
     public double Inthrone() {
         if (Arrays.equals(this.getKing(), new Integer[]{4, 4})) {
             return 0;
         } else {
-            return 0.4;
+            return 0.5;
         }
     }
+
+ */
 
     public double kingStrategic() {
         ArrayList<Integer[]> kingStrategicPosition1 = new ArrayList<>(Arrays.asList(
@@ -107,25 +109,27 @@ public class HeuristicWhite extends Heuristic {
         double NB = 1 - super.getNblack() / 16.0;
         double NW = super.getNWhite() / 9.0;
         double FK = freeKing();
-        double T = Inthrone();
+        //double T = Inthrone();
         double X = XPosition();
         double KS = kingStrategic();
+        double WC = WhitePawnCross();
 
-        double KP = 7;
-        double CDP = 0;
-        double NBP = 5;
-        double NWP = 20;
-        double FKP = 12;
-        double TP = 0;
-        double XP = 7;
-        double KSP = 10;
+        double KP = 5.0;
+        double CDP = 10.0;
+        double NBP = 30.0;
+        double NWP = 40.0;
+        double FKP = 15.0;
+        //double TP = 0.0;
+        double XP = 15.0;
+        double KSP = 5.0;
+        double WCP = 10.0;
 
-        return (K * KP + KS * KSP + NW * NWP + NB * NBP + FK * FKP + T * TP + X * XP) / (KP + KSP + NWP + NBP + TP + FKP + XP);
+        return (K * KP + KS * KSP + NW * NWP + NB * NBP + FK * FKP + X * XP + CD*CDP + WC*WCP);
 
     }
 
     private double kingExit() {
-        List<Integer[]> winTiles = (List<Integer[]>) new ArrayList<>(Arrays.asList(
+        List<Integer[]> winTiles = new ArrayList<>(Arrays.asList(
                 new Integer[]{0, 1},
                 new Integer[]{0, 2},
                 new Integer[]{0, 6},
@@ -143,15 +147,14 @@ public class HeuristicWhite extends Heuristic {
                 new Integer[]{6, 8},
                 new Integer[]{7, 8}
         ));
-        List<Integer[]> kingPos = NSOEgame.getPositionsOf(super.getState(), State.Pawn.KING);
         int min = 10;
         for (Integer[] tile : winTiles) {
-            int mnd = super.ManhatthanDistance(kingPos.get(0), tile);
+            int mnd = super.ManhatthanDistance(this.getKing(), tile);
             if (min > mnd) {
                 min = mnd;
             }
         }
-        return 1 - ((double) min / 6);
+        return 1 - ((double) min / 6.0);
     }
 
     private double checkDensity() {
@@ -181,5 +184,42 @@ public class HeuristicWhite extends Heuristic {
         return 1 - ((double) blackNumber / getNblack());
     }
 
+    public double WhitePawnCross(){
+
+        double val = 0.0;
+
+        for(Integer[] pawn : this.getWhiteP()){
+
+            if(pawn[0] < 8 && super.getState().getPawn(pawn[0]+1, pawn[1]) == State.Pawn.EMPTY){
+                val += 0.25;
+            }
+            if(pawn[1] < 8 && super.getState().getPawn(pawn[0], pawn[1]+1) == State.Pawn.EMPTY){
+                val += 0.25;
+            }
+            if(pawn[0] > 0 && super.getState().getPawn(pawn[0]-1, pawn[1]) == State.Pawn.EMPTY){
+                val += 0.25;
+            }
+            if(pawn[1] > 0 && super.getState().getPawn(pawn[0], pawn[1]-1) == State.Pawn.EMPTY){
+                val += 0.25;
+            }
+            if(pawn[0] < 8 && (super.getState().getPawn(pawn[0]+1, pawn[1]) == State.Pawn.BLACK ||
+                    super.getState().getPawn(pawn[0]+1, pawn[1]) == State.Pawn.KING)){
+                val += 0.125;
+            }
+            if(pawn[1] < 8 && (super.getState().getPawn(pawn[0], pawn[1]+1) == State.Pawn.BLACK ||
+                    super.getState().getPawn(pawn[0], pawn[1]+1) == State.Pawn.KING)){
+                val += 0.125;
+            }
+            if(pawn[0] > 0 && (super.getState().getPawn(pawn[0]-1, pawn[1]) == State.Pawn.BLACK ||
+                    super.getState().getPawn(pawn[0]-1, pawn[1]) == State.Pawn.KING)){
+                val += 0.125;
+            }
+            if(pawn[1] > 0 && (super.getState().getPawn(pawn[0], pawn[1]-1) == State.Pawn.BLACK ||
+                    super.getState().getPawn(pawn[0], pawn[1]-1) == State.Pawn.KING)){
+                val += 0.125;
+            }
+        }
+        return val/this.getNWhite();
+    }
 
 }
