@@ -83,7 +83,7 @@ public class NSOEClient extends TablutClient{
             System.exit(4);
         }
 
-        giocatore =new NSOEPlayer(rules, Double.MIN_VALUE,Double.MAX_VALUE,(this.getTimeout()-2)/2);
+        giocatore =new NSOEPlayer(rules, Double.MIN_VALUE,Double.MAX_VALUE,this.getTimeout());
 
         state.setTurn(State.Turn.WHITE);
 

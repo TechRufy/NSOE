@@ -7,6 +7,30 @@ import java.util.*;
 
 public class HeuristicBlack extends Heuristic {
 
+    private final Integer Krow = this.getKing()[0];
+    private final Integer Kcolumn = this.getKing()[1];
+
+
+    private static final ArrayList<Integer[]> OuterStrategicPosition = new ArrayList<>(Arrays.asList(
+            new Integer[]{1, 2},
+            new Integer[]{2, 1},
+            new Integer[]{6, 1},
+            new Integer[]{7, 2},
+            new Integer[]{7, 6},
+            new Integer[]{6, 7},
+            new Integer[]{2, 7},
+            new Integer[]{1, 6}));
+
+    private static final ArrayList<Integer[]> InnerStrategicPosition = new ArrayList<>(Arrays.asList(
+            new Integer[]{3, 2},
+            new Integer[]{2, 3},
+            new Integer[]{2, 5},
+            new Integer[]{3, 6},
+            new Integer[]{5, 6},
+            new Integer[]{6, 5},
+            new Integer[]{6, 3},
+            new Integer[]{5, 2}));
+
 
     public HeuristicBlack(State state) {
 
@@ -19,12 +43,13 @@ public class HeuristicBlack extends Heuristic {
 
         ArrayList<Integer> distance = new ArrayList<>();
 
+
         for (Integer[] p: this.getBlackP()) {
 
-            Integer[] sopra = {this.getKing()[0] + 2, this.getKing()[1]};
-            Integer[] sotto = {this.getKing()[0] - 2, this.getKing()[1]};
-            Integer[] destra = {this.getKing()[0], this.getKing()[1] + 2};
-            Integer[] sinistra = {this.getKing()[0], this.getKing()[1] - 2};
+            Integer[] sopra = {Krow + 2, Kcolumn};
+            Integer[] sotto = {Krow - 2, Kcolumn};
+            Integer[] destra = {Krow, Kcolumn + 2};
+            Integer[] sinistra = {Krow, Kcolumn - 2};
 
             ArrayList<Integer> Dcroce = new ArrayList<>();
             Dcroce.add(ManhatthanDistance(p,sopra));
@@ -44,19 +69,8 @@ public class HeuristicBlack extends Heuristic {
 
 
     public double OuterDiagonal(){
-        ArrayList<Integer[]> StrategicPosition = new ArrayList<>(Arrays.asList(
-                new Integer[]{1, 2},
-                new Integer[]{2, 1},
-                new Integer[]{6, 1},
-                new Integer[]{7, 2},
-                new Integer[]{7, 6},
-                new Integer[]{6, 7},
-                new Integer[]{2, 7},
-                new Integer[]{1, 6}));
 
-
-
-        double c = (double) StrategicPosition.stream().filter(tile -> this.getState().getPawn(tile[0],tile[1]).equals(State.Pawn.WHITE)).count();
+        double c = (double) OuterStrategicPosition.stream().filter(tile -> this.getState().getPawn(tile[0],tile[1]).equals(State.Pawn.WHITE)).count();
 
         return c/8.0;
 
@@ -64,17 +78,8 @@ public class HeuristicBlack extends Heuristic {
     }
 
     public double InnerDiagonal(){
-        ArrayList<Integer[]> StrategicPosition = new ArrayList<>(Arrays.asList(
-                new Integer[]{3, 2},
-                new Integer[]{2, 3},
-                new Integer[]{2, 5},
-                new Integer[]{3, 6},
-                new Integer[]{5, 6},
-                new Integer[]{6, 5},
-                new Integer[]{6, 3},
-                new Integer[]{5, 2}));
 
-        double c = (double) StrategicPosition.stream().filter(tile -> this.getState().getPawn(tile[0],tile[1]).equals(State.Pawn.WHITE)).count();
+        double c = (double) InnerStrategicPosition.stream().filter(tile -> this.getState().getPawn(tile[0],tile[1]).equals(State.Pawn.WHITE)).count();
 
         return c/8.0;
     }
@@ -82,10 +87,10 @@ public class HeuristicBlack extends Heuristic {
     public double KingCross(){
 
         ArrayList<Integer[]> Cross = new ArrayList<>(Arrays.asList(
-                new Integer[]{this.getKing()[0] + 1,this.getKing()[1]},
-                new Integer[]{this.getKing()[0] - 1,this.getKing()[1]},
-                new Integer[]{this.getKing()[0],this.getKing()[1] + 1},
-                new Integer[]{this.getKing()[0],this.getKing()[1] - 1}));
+                new Integer[]{Krow + 1,Kcolumn},
+                new Integer[]{Krow - 1,Kcolumn},
+                new Integer[]{Krow,Kcolumn + 1},
+                new Integer[]{Krow,Kcolumn - 1}));
 
         double value = 0.0;
         Boolean flag = Boolean.FALSE;
@@ -126,12 +131,12 @@ public class HeuristicBlack extends Heuristic {
         double NW = 1.0 - super.getNWhite()/9.0;
         double FK = freeKing();
         double ID = InnerDiagonal();
-        double KP =  5.0;
+        double KP =  10.0;
         double ODP = 25.0;
-        double KCP = 2.0;
-        double NBP = 15.0;
-        double NWP = 8.0;
-        double FKP = 20.0;
+        double KCP = 10.0;
+        double NBP = 18.0;
+        double NWP = 10.0;
+        double FKP = 25.0;
         double IDP = 10.0;
 
 

@@ -7,28 +7,66 @@ import it.unibo.ai.didattica.competition.tablut.domain.State;
 import java.util.*;
 
 public class HeuristicWhite extends Heuristic {
+
+    Integer Krow = this.getKing()[0];
+    Integer Kcolumn = this.getKing()[1];
+
+    private static final List<Integer[]> winTiles = new ArrayList<>(Arrays.asList(
+            new Integer[]{0, 1},
+            new Integer[]{0, 2},
+            new Integer[]{0, 6},
+            new Integer[]{0, 7},
+            new Integer[]{1, 0},
+            new Integer[]{2, 0},
+            new Integer[]{6, 0},
+            new Integer[]{7, 0},
+            new Integer[]{8, 1},
+            new Integer[]{8, 2},
+            new Integer[]{8, 6},
+            new Integer[]{8, 7},
+            new Integer[]{1, 8},
+            new Integer[]{2, 8},
+            new Integer[]{6, 8},
+            new Integer[]{7, 8}
+    ));
+
+
+    private static final ArrayList<Integer[]> StrategicPosition = new ArrayList<>(Arrays.asList(
+            new Integer[]{2, 2},
+            new Integer[]{3, 3},
+            new Integer[]{5, 3},
+            new Integer[]{6, 2},
+            new Integer[]{5, 5},
+            new Integer[]{6, 6},
+            new Integer[]{3, 5},
+            new Integer[]{2, 6},
+            new Integer[]{1, 3},
+            new Integer[]{1, 5},
+            new Integer[]{3, 1},
+            new Integer[]{5, 1},
+            new Integer[]{3, 7},
+            new Integer[]{5, 7},
+            new Integer[]{7, 3},
+            new Integer[]{7, 5}));
+
+    private static final ArrayList<Integer[]> kingStrategicPosition1 = new ArrayList<>(Arrays.asList(
+            new Integer[]{2, 2},
+            new Integer[]{6, 2},
+            new Integer[]{2, 6},
+            new Integer[]{6, 6}));
+
+
+    private static final ArrayList<Integer[]> kingStrategicPosition2 = new ArrayList<>(Arrays.asList(
+            new Integer[]{4, 2},
+            new Integer[]{2, 4},
+            new Integer[]{4, 6},
+            new Integer[]{6, 4}));
+
     public HeuristicWhite(State state) {
         super(state);
     }
 
     public double XPosition() {
-        ArrayList<Integer[]> StrategicPosition = new ArrayList<>(Arrays.asList(
-                new Integer[]{2, 2},
-                new Integer[]{3, 3},
-                new Integer[]{5, 3},
-                new Integer[]{6, 2},
-                new Integer[]{5, 5},
-                new Integer[]{6, 6},
-                new Integer[]{3, 5},
-                new Integer[]{2, 6},
-                new Integer[]{1, 3},
-                new Integer[]{1, 5},
-                new Integer[]{3, 1},
-                new Integer[]{5, 1},
-                new Integer[]{3, 7},
-                new Integer[]{5, 7},
-                new Integer[]{7, 3},
-                new Integer[]{7, 5}));
 
 
         double c = (double) StrategicPosition.stream().filter(tile -> this.getState().getPawn(tile[0], tile[1]).equals(State.Pawn.WHITE)).count();
@@ -49,55 +87,16 @@ public class HeuristicWhite extends Heuristic {
  */
 
     public double kingStrategic() {
-        ArrayList<Integer[]> kingStrategicPosition1 = new ArrayList<>(Arrays.asList(
-                new Integer[]{2, 2},
-                new Integer[]{6, 2},
-                new Integer[]{2, 6},
-                new Integer[]{6, 6}));
 
-        List<Integer[]> blackP = getBlackP();
 
-        Integer[] p1 = {4, 2};
-        Integer[] p2 = {2, 4};
-        Integer[] p3 = {4, 6};
-        Integer[] p4 = {6, 4};
-        Integer[] b1 = {4, 3};
-        Integer[] b2 = {3, 4};
-        Integer[] b3 = {4, 5};
-        Integer[] b4 = {5, 4};
+        if(kingStrategicPosition1.stream().anyMatch(tile -> Arrays.equals(tile, this.getKing()))){
+            return 1;
+        };
 
-        for (Integer[] tile : kingStrategicPosition1) {
-            if (Arrays.equals(this.getKing(), tile)) {
-                return 2;
-            }
-        }
-        for (Integer[] tileBlack : blackP) {
-            if (Arrays.equals(this.getKing(), p1) && Arrays.equals(tileBlack, b1)) {
-                return 0;
-            }
-            if (Arrays.equals(this.getKing(), p2) && Arrays.equals(tileBlack, b2)) {
-                return 0;
-            }
-            if (Arrays.equals(this.getKing(), p3) && Arrays.equals(tileBlack, b3)) {
-                return 0;
-            }
-            if (Arrays.equals(this.getKing(), p4) && Arrays.equals(tileBlack, b4)) {
-                return 0;
-            }
-            if (Arrays.equals(this.getKing(), p1)) {
-                return 2;
-            }
-            if (Arrays.equals(this.getKing(), p2)) {
-                return 2;
-            }
-            if (Arrays.equals(this.getKing(), p3)) {
-                return 2;
-            }
-            if (Arrays.equals(this.getKing(), p4)) {
-                return 2;
-            }
-        }
-        return 0;
+        if(kingStrategicPosition2.stream().anyMatch(tile -> Arrays.equals(tile, this.getKing()))){
+            return 0.5;
+        };
+        return 0.0;
     }
 
 
@@ -114,39 +113,21 @@ public class HeuristicWhite extends Heuristic {
         double KS = kingStrategic();
         double WC = WhitePawnCross();
 
-        double KP = 5.0;
+        double KP = 3.0;
         double CDP = 10.0;
-        double NBP = 30.0;
+        double NBP = 25.0;
         double NWP = 40.0;
-        double FKP = 15.0;
+        double FKP = 7.0;
         //double TP = 0.0;
-        double XP = 15.0;
-        double KSP = 5.0;
-        double WCP = 10.0;
+        double XP = 13.0;
+        double KSP = 8.0;
+        double WCP = 15.0;
 
         return (K * KP + KS * KSP + NW * NWP + NB * NBP + FK * FKP + X * XP + CD*CDP + WC*WCP);
 
     }
 
     private double kingExit() {
-        List<Integer[]> winTiles = new ArrayList<>(Arrays.asList(
-                new Integer[]{0, 1},
-                new Integer[]{0, 2},
-                new Integer[]{0, 6},
-                new Integer[]{0, 7},
-                new Integer[]{1, 0},
-                new Integer[]{2, 0},
-                new Integer[]{6, 0},
-                new Integer[]{7, 0},
-                new Integer[]{8, 1},
-                new Integer[]{8, 2},
-                new Integer[]{8, 6},
-                new Integer[]{8, 7},
-                new Integer[]{1, 8},
-                new Integer[]{2, 8},
-                new Integer[]{6, 8},
-                new Integer[]{7, 8}
-        ));
         int min = 10;
         for (Integer[] tile : winTiles) {
             int mnd = super.ManhatthanDistance(this.getKing(), tile);
@@ -160,20 +141,17 @@ public class HeuristicWhite extends Heuristic {
     private double checkDensity() {
 
         int blackNumber = 0;
-        /*if(this.getKing()[0] == 4 || this.getKing()[1] == 4){
-            return 0.5;
-        }*/
         int[] quarter = new int[4];
-        if (this.getKing()[0] >= 0 && this.getKing()[0] <= 3 && this.getKing()[1] >= 0 && this.getKing()[1] <= 3) {
+        if (Krow >= 0 && Krow <= 3 && Kcolumn >= 0 && Kcolumn <= 3) {
             quarter = new int[]{0, 3, 0, 3};
         }
-        if (this.getKing()[0] >= 5 && this.getKing()[0] <= 8 && this.getKing()[1] >= 0 && this.getKing()[1] <= 3) {
+        if (Krow >= 5 && Krow <= 8 && Kcolumn >= 0 && Kcolumn <= 3) {
             quarter = new int[]{5, 8, 0, 3};
         }
-        if (this.getKing()[0] >= 0 && this.getKing()[0] <= 3 && this.getKing()[1] >= 5 && this.getKing()[1] <= 8) {
+        if (Krow >= 0 && Krow <= 3 && Kcolumn >= 5 && Kcolumn <= 8) {
             quarter = new int[]{0, 3, 5, 8};
         }
-        if (this.getKing()[0] >= 5 && this.getKing()[0] <= 8 && this.getKing()[1] >= 5 && this.getKing()[1] <= 8) {
+        if (Krow >= 5 && Krow <= 8 && Kcolumn >= 5 && Kcolumn <= 8) {
             quarter = new int[]{5, 8, 5, 8};
         }
         for (Integer[] blackP : this.getBlackP()) {

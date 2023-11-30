@@ -22,7 +22,6 @@ public class Heuristic {
     public Heuristic(State state) {
 
         this.state = state;
-        State.Pawn[][] board = this.state.getBoard();
 
         this.king = NSOEgame.getPositionsOf(this.state,State.Pawn.KING).get(0);
         this.blackP = NSOEgame.getPositionsOf(this.state,State.Pawn.BLACK);
@@ -32,6 +31,7 @@ public class Heuristic {
         this.citadels.add(new Integer[]{0,4});
         this.citadels.add(new Integer[]{0,5});
         this.citadels.add(new Integer[]{1,4});
+
         this.citadels.add(new Integer[]{3,0});
         this.citadels.add(new Integer[]{4,0});
         this.citadels.add(new Integer[]{5,0});
@@ -45,7 +45,7 @@ public class Heuristic {
         this.citadels.add(new Integer[]{5,8});
         this.citadels.add(new Integer[]{4,7});
 
-        for (State.Pawn[] rows: board) {
+        for (State.Pawn[] rows: this.state.getBoard()) {
             for (State.Pawn p: rows) {
 
                 if (p.equalsPawn(String.valueOf(State.Pawn.BLACK))){
